@@ -1,42 +1,39 @@
 // arch.gv
 digraph arch {
-	0 [label="0 :: <class '__main__.node'> 1"]
-	1 [label="1 :: convolution_block(
-  (conv_layer): Conv2d(5, 4, kernel_size=(3, 3), stride=(1, 1))
-  (batch_norm): BatchNorm2d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (relu): ReLU()
-)"]
-	2 [label="2 :: convolution_block(
-  (conv_layer): Conv2d(4, 3, kernel_size=(2, 2), stride=(1, 1))
-  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (relu): ReLU()
-)"]
-	3 [label="3 :: convolution_block(
-  (conv_layer): Conv2d(4, 3, kernel_size=(2, 2), stride=(1, 1))
-  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (relu): ReLU()
-)"]
-	4 [label="4 :: add_node()"]
-	5 [label="5 :: convolution_block(
-  (conv_layer): Conv2d(4, 3, kernel_size=(2, 2), stride=(1, 1))
-  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (relu): ReLU()
-)"]
-	6 [label="6 :: add_node()"]
-	7 [label="7 :: convolution_block(
-  (conv_layer): Conv2d(5, 3, kernel_size=(6, 6), stride=(1, 1), padding=(1, 1))
-  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-  (rel"]
-	8 [label="8 :: add_node()"]
+	0 [label="0 :: 1 simple"]
+	1 [label="1 :: 2 conv"]
+	2 [label="2 :: 3 conv"]
+	3 [label="3 :: 10 conv"]
+	4 [label="4 :: 5 add"]
+	5 [label="5 :: 17 conv"]
+	6 [label="6 :: 7 add"]
+	7 [label="7 :: 11 conv"]
+	8 [label="8 :: 9 conv"]
+	9 [label="9 :: 12 conv"]
+	10 [label="10 :: 13 add"]
+	11 [label="11 :: 14 conv"]
+	12 [label="12 :: 15 add"]
+	13 [label="13 :: 18 conv"]
+	14 [label="14 :: 19 conv"]
+	15 [label="15 :: 20 add"]
 	0 -> 1
-	0 -> 7
-	1 -> 2
-	1 -> 3
-	1 -> 5
+	0 -> 11
+	1 -> 8
+	1 -> 9
 	2 -> 4
-	3 -> 4
-	4 -> 8
-	5 -> 6
-	7 -> 8
-	8 -> 6
+	3 -> 7
+	4 -> 6
+	5 -> 13
+	6 -> 10
+	7 -> 4
+	7 -> 14
+	8 -> 2
+	8 -> 3
+	8 -> 5
+	9 -> 12
+	10 -> 15
+	11 -> 12
+	12 -> 10
+	13 -> 6
+	14 -> 15
 }
