@@ -1,5 +1,0 @@
-digraph "CNN architecture" {
-	1 [label="convolution_block'>"]
-	2 [label="convolution_block'>"]
-	1 -> 2
-}
