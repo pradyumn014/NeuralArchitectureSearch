@@ -1,0 +1,14 @@
+// arch.gv
+digraph arch {
+	1 [label="convolution_block(
+  (conv_layer): Conv2d(5, 5, kernel_size=(3, 3), stride=(1, 1))
+  (batch_norm): BatchNorm2d(5, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	2 [label="convolution_block(
+  (conv_layer): Conv2d(5, 4, kernel_size=(2, 2), stride=(1, 1))
+  (batch_norm): BatchNorm2d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	1 -> 2
+}
