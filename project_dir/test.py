@@ -1,4 +1,6 @@
 from network import Network
+from nodes import *
+import random
 
 def graph_test():    
     n1 = convolution_block(3, 32, 32 , 4, 3)
@@ -26,4 +28,5 @@ def graph_test():
         op()
     net.visualize()
 
-test()
+if  __name__ == "__main__":
+    graph_test()

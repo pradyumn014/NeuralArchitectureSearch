@@ -1,0 +1,116 @@
+// ./assets/images/test_net.gv
+digraph "./assets/images/test_net" {
+	0 [label="0 :: convolution_block(
+  (conv_layer): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1))
+  (batch_norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	1 [label="1 :: convolution_block(
+  (conv_layer): Conv2d(4, 3, kernel_size=(3, 3), stride=(1, 1))
+  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	2 [label="2 :: FlattenBlock()"]
+	3 [label="3 :: fullyConnectedBlock()"]
+	4 [label="4 :: fullyConnectedBlock()"]
+	5 [label="5 :: convolution_block(
+  (conv_layer): Conv2d(32, 4, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  (batch_norm): BatchNorm2d(4, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	6 [label="6 :: convolution_block(
+  (conv_layer): Conv2d(3, 24, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  (batch_norm): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	7 [label="7 :: convolution_block(
+  (conv_layer): Conv2d(48, 3, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	8 [label="8 :: convolution_block(
+  (conv_layer): Conv2d(12, 48, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  (batch_norm): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	9 [label="9 :: convolution_block(
+  (conv_layer): Conv2d(24, 12, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (batch_norm): BatchNorm2d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	10 [label="10 :: convolution_block(
+  (conv_layer): Conv2d(12, 12, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+  (batch_norm): BatchNorm2d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	11 [label="11 :: convolution_block(
+  (conv_layer): Conv2d(3, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	12 [label="12 :: convolution_block(
+  (conv_layer): Conv2d(12, 48, kernel_size=(11, 11), stride=(1, 1), padding=(5, 5))
+  (batch_norm): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	13 [label="13 :: add_block()"]
+	14 [label="14 :: convolution_block(
+  (conv_layer): Conv2d(4, 3, kernel_size=(29, 29), stride=(1, 1), padding=(13, 13))
+  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	15 [label="15 :: add_block()"]
+	16 [label="16 :: convolution_block(
+  (conv_layer): Conv2d(24, 24, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (batch_norm): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	17 [label="17 :: convolution_block(
+  (conv_layer): Conv2d(24, 3, kernel_size=(21, 21), stride=(1, 1), padding=(10, 10))
+  (batch_norm): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	18 [label="18 :: add_block()"]
+	19 [label="19 :: convolution_block(
+  (conv_layer): Conv2d(48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (batch_norm): BatchNorm2d(48, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	20 [label="20 :: convolution_block(
+  (conv_layer): Conv2d(24, 24, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (batch_norm): BatchNorm2d(24, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	21 [label="21 :: convolution_block(
+  (conv_layer): Conv2d(3, 12, kernel_size=(17, 17), stride=(1, 1), padding=(8, 8))
+  (batch_norm): BatchNorm2d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU()
+)"]
+	22 [label="22 :: add_block()"]
+	0 -> 5
+	1 -> 11
+	1 -> 21
+	2 -> 3
+	3 -> 4
+	5 -> 1
+	5 -> 14
+	6 -> 20
+	7 -> 15
+	8 -> 13
+	9 -> 22
+	10 -> 8
+	11 -> 6
+	12 -> 19
+	13 -> 7
+	14 -> 15
+	15 -> 18
+	16 -> 9
+	17 -> 18
+	18 -> 2
+	19 -> 13
+	20 -> 16
+	20 -> 17
+	21 -> 22
+	22 -> 10
+	22 -> 12
+}

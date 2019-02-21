@@ -1,5 +1,14 @@
+import torch
 import torch.nn as nn
 from nodes import *
+
+import numpy as np
+import random
+from graphviz import Digraph
+
+seed = 53
+np.random.seed(seed)
+torch.manual_seed(seed)
 
 class Network(nn.Module, object):
     def __init__(self):
