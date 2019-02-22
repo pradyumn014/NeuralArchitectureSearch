@@ -39,7 +39,7 @@ def dummy_train():
 
     flatten = FlattenBlock((64, 22, 22))
     f1 = fullyConnectedBlock(64*22*22, 32, True, 'relu')
-    f2 = fullyConnectedBlock(32, 10)
+    f2 = fullyConnectedBlock(32, 10, True, 'relu')
     
     n1.describe_adj_list([], [n2])
     n2.describe_adj_list([n1], [m1])
@@ -62,7 +62,7 @@ def dummy_train1():
     n2 = convolution_block(32, 30, 30, 32, 3)
     m1 = max_pool_block(32, 28, 28, 2)
     flatten = FlattenBlock((32, 27, 27))
-    f1 = fullyConnectedBlock(32*27*27, 10, True, 'relu')
+    f1 = fullyConnectedBlock(32*27*27, 10)
     # f2 = fullyConnectedBlock(32, 10)
 
     n1.describe_adj_list([], [n2])
@@ -78,7 +78,7 @@ def dummy_train1():
 
     net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], []]}, {0: n1, 1:n2, 2:m1, 3:flatten, 4:f1}, 'test_net')
     net.createModel()
-    Train(net, 1, 0.01, 0.001)
+    Train(net, 1, 128,  0.01, 0.001)
     Test(net)   
 
 

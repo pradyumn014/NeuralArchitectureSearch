@@ -14,11 +14,31 @@ train_set = torchvision.datasets.CIFAR10(root='../assets/data/cifardata', train=
 test_set = torchvision.datasets.CIFAR10(root='../assets/data/cifardata', train=False, download=True, transform=transform)
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-trainloader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=2)
+
+#Training
+n_training_samples = 40000
+train_sampler = SubsetRandomSampler(np.arange(n_training_samples, dtype=np.int64))
+
+#Validation
+n_val_samples = 10000
+val_sampler = SubsetRandomSampler(np.arange(n_training_samples, n_training_samples + n_val_samples, dtype=np.int64))
+
+#Test
+n_test_samples = 10000
+test_sampler = SubsetRandomSampler(np.arange(n_test_samples, dtype=np.int64))
+
+
+def get_train_loader(batch_size):
+    trainloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, sampler=train_sampler, num_workers=2)
+    return trainloader
+
+# trainloader = torch.utils.data.DataLoader(train_set, batch_size=128, shuffle=True, num_workers=2)
 testloader = torch.utils.data.DataLoader(test_set, batch_size=4, shuffle=False, num_workers=2)
+val_loader = torch.utils.data.DataLoader(train_set, batch_size=128, sampler=val_sampler, num_workers=2)
 
 
 def Test(net) :
+    print "Testing"
     net.eval()
     class_correct = list(0. for i in range(10))
     class_total = list(0. for i in range(10))
@@ -42,16 +62,18 @@ def Test(net) :
         correct += class_correct[i]
     print((correct/total)*100)
 
-def Train(net, epochs, lr_start, lr_end):
+
+def Train(net, epochs, batch_size, lr_start, lr_end):
+    trainloader = get_train_loader(batch_size)
     net.train()
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
     training_start_time = time.time()
 	# use lr_start, lr_end for annealing 
 	# use SGDR instead of SGD : experiment with other optims
-    print 'Train Data', len(trainloader)*4
+    print 'Train Data Size', len(trainloader)*batch_size
+
     for epoch in range(epochs):  # loop over the dataset multiple times
-        # break
         running_loss = 0.0
         n_batches = len(trainloader)
         print_every = n_batches // 10
@@ -61,10 +83,7 @@ def Train(net, epochs, lr_start, lr_end):
         total = 0
 
         for i, data in enumerate(trainloader, 0):
-            # print len(trainloader)
-
-            # get the inputs
-            
+ 
             inputs, labels = data
             inputs, labels = Variable(inputs), Variable(labels)
 
@@ -98,14 +117,27 @@ def Train(net, epochs, lr_start, lr_end):
                 running_loss = 0.0
                 start_time = time.time()
 
-	        # viewerval = 100
+        total_val_loss = 0
+        val_total = 0
+        val_correct = 0
+        for inputs, labels in val_loader:
+            
+            #Wrap tensors in Variables
+            inputs, labels = Variable(inputs), Variable(labels)
+            
+            #Forward pass
+            val_outputs = net(inputs)
 
-	        # print 'Done [{}|{}]'.format(i,running_loss)
+            #for accuracy
+            _, predicted = val_outputs.max(1)
+            val_total += labels.size(0)
+            val_correct += predicted.eq(labels).sum().item() 
 
-
-	        # if i % viewerval == viewerval-1:    # print every 2000 mini-batches
-	        #     print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, running_loss / viewerval))
-	        #     running_loss = 0.0
-
+            val_loss_size = criterion(val_outputs, labels)
+            total_val_loss += val_loss_size.data[0]
+            
+        print("Validation loss = {:.2f}".format(total_val_loss / len(val_loader)))
+        print('Accuracy {}'.format(str(val_correct/val_total)))
     print("Training finished, took {:.2f}s".format(time.time() - training_start_time))
+    return (total_val_loss / len(val_loader), val_correct/val_total)
 
