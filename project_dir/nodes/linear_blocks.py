@@ -9,13 +9,16 @@ class FlattenBlock(nn.Module, node):
         return x.view(x.shape[0], -1)
 
 class fullyConnectedBlock(nn.Module,node) :
-    def __init__(self, input_units, output_units, activation = False) : 
+    def __init__(self, input_units, output_units,   activation = False, ac_type = 'relu',) : 
         super(fullyConnectedBlock,self).__init__()
         node.__init__(self, (input_units, ), (output_units, ))
         self.layers = []
         self.layers.append(nn.Linear(input_units, output_units))
         if activation:
-            self.layers.append(nn.ReLU())
+            if ac_type == 'relu':
+                self.layers.append(nn.ReLU())
+            else:
+                self.layers.append(nn.Softmax())
      
     def forward(self, x) :
         out = x

@@ -3,7 +3,7 @@ from node import node
 
 class max_pool_block(nn.Module, node):  
     def __init__(self, in_channels, in_h, in_w, kernel_size, padding = 0, stride = 1):
-        super(max_pool_node, self).__init__()    
+        super(max_pool_block, self).__init__()    
         node.__init__(self, (in_channels, in_h, in_w))
         self.kernel_size = kernel_size
         self.stride = stride 

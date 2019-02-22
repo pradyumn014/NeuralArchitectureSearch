@@ -40,6 +40,6 @@ class convolution_block(nn.Module, node):
     
     def forward(self, x):
         x = self.conv_layer(x)
-        x = self.batch_norm(x)
         x = self.relu(x)
+        x = self.batch_norm(x)
         return x 
