@@ -76,7 +76,7 @@ def Train(net, epochs, batch_size, lr_start, lr_end):
     for epoch in range(epochs):  # loop over the dataset multiple times
         running_loss = 0.0
         n_batches = len(trainloader)
-        print_every = n_batches // 2
+        print_every = n_batches
         start_time = time.time()
         total_train_loss = 0
         correct = 0
@@ -137,8 +137,8 @@ def Train(net, epochs, batch_size, lr_start, lr_end):
             val_loss_size = criterion(val_outputs, labels)
             total_val_loss += val_loss_size.data.item()
             
-        print("Validation loss = {:.2f}".format(total_val_loss / len(val_loader)))
-        print('Accuracy {}'.format(str(100.*val_correct/val_total)))
+        print("Epoch {}, Validation loss = {:.2f}".format(epoch+1, total_val_loss / len(val_loader)))
+        print('Epoch{}, Accuracy {}'.format(epoch+1, str(100.*val_correct/val_total)))
     print("Training finished, took {:.2f}s".format(time.time() - training_start_time))
     return (total_val_loss / len(val_loader), val_correct/val_total)
 

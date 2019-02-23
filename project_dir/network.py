@@ -176,7 +176,8 @@ class Network(nn.Module, object):
             out_node.describe_adj_list(out_node_in_adj, list(out_node.out_adj))
         
         self.add_nodes_to_network([deepen_conv_block, identity_conv_block] + identity_conv_block.out_adj)
-        return True  
+        new_nodes = [identity_conv_block]
+        return (True, new_nodes)
     
     def widen_morph(self):
         candidate_conv_blocks = []
@@ -187,7 +188,7 @@ class Network(nn.Module, object):
             if isCandidate:
                 candidate_conv_blocks.append(conv_block)
         if len(candidate_conv_blocks) == 0:
-            return False
+            return (False, [])
 
 #         parent_block_no = random.choice(candidate_conv_blocks)
         parent_block = self.int_to_node[random.choice(candidate_conv_blocks)]
@@ -215,7 +216,8 @@ class Network(nn.Module, object):
             original_child_weight = child.conv_layer.weight
             child.refresh(in_channels*widening_factor, in_h, in_w, out_channels, kernel_size, padding, stride)
             child.conv_layer.weight[:, :in_channels, :, :] = torch.nn.Parameter(original_child_weight)
-        return True
+        new_nodes = [parent_block] + parent_block.out_adj
+        return (True, new_nodes)
         
     ## Start from here
     def dfs(self, curr_node, visited, weight):
@@ -283,8 +285,25 @@ class Network(nn.Module, object):
             child_node.describe_adj_list([new_add if x==node_b else x for x in child_node.in_adj], list(child_node.out_adj))
         node_b.describe_adj_list(list(node_b.in_adj), [new_add])
         self.add_nodes_to_network([node_a, node_b, new_conv, new_add] + new_add.out_adj)
-        return True
-        
+        new_nodes = [new_conv]
+        return (True, new_nodes)
+
+    def set_training(self, new_nodes):
+        for node in self.node_to_int:
+            val = node in new_nodes
+            # print val
+            if isinstance(node, convolution_block):
+                for param in node.conv_layer.parameters():
+                    param.requires_grad = val
+                for param in node.relu.parameters():
+                    param.requires_grad = val
+                for param in node.batch_norm.parameters():
+                    param.requires_grad = val
+            elif isinstance(node, fullyConnectedBlock):
+                continue
+            elif isinstance(node, max_pool_block):
+                for param in node.max_pool_layer.parameters():
+                    param.requires_grad = val
         
     def visualize(self, path  = '../assets/images/path'):
         image_path = path
