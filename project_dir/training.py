@@ -71,12 +71,12 @@ def Train(net, epochs, batch_size, lr_start, lr_end):
     training_start_time = time.time()
 	# use lr_start, lr_end for annealing 
 	# use SGDR instead of SGD : experiment with other optims
-    print 'Train Data Size', len(trainloader)*batch_size
+    # print 'Train Data Size', len(trainloader)*batch_size
 
     for epoch in range(epochs):  # loop over the dataset multiple times
         running_loss = 0.0
         n_batches = len(trainloader)
-        print_every = n_batches // 10
+        print_every = n_batches // 2
         start_time = time.time()
         total_train_loss = 0
         correct = 0
