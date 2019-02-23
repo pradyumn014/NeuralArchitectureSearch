@@ -24,10 +24,10 @@ class Network(nn.Module, object):
         self.rank_in_topsort = {}
         self.max_no = 0
         self.node_dict = {}
-        self.image_path = './assets/images/net' 
+        # self.image_path = './assets/images/net' 
 
         
-    def __init__(self, adj_list, int_to_node, filename  = 'net'):
+    def __init__(self, adj_list, int_to_node):
         super(Network, self).__init__()        
 #         assert len(adj_list) == assert(int_to_node)
         self.adj_list = adj_list
@@ -41,7 +41,7 @@ class Network(nn.Module, object):
         self.topsort = []
         self.rank_in_topsort = {}
         self.topsorting()
-        self.image_path =  './assets/images/' + filename
+        # self.image_path =  './assets/images/' + filename
 
         
     def get_adj_mat(self, adj_list):
@@ -91,7 +91,11 @@ class Network(nn.Module, object):
             self.rank_in_topsort[node_no]  = ind
         
     def createModel(self):
-         self.node_dict = torch.nn.ModuleDict(self.node_dict)
+        del self.node_dict
+        self.node_dict = {}
+        for x, node in self.int_to_node.items():
+            self.node_dict[str(x)] = node
+        self.node_dict = torch.nn.ModuleDict(self.node_dict)
         
     def forward(self, x):
         self.topsorting() # though this is not required here
@@ -109,10 +113,10 @@ class Network(nn.Module, object):
         for x in self.nodes:
             if isinstance(self.int_to_node[x], convolution_block):
                 conv_blocks.append(x)
-                self.node_dict[str(x)]=self.int_to_node[x]
+                # self.node_dict[str(x)]=self.int_to_node[x]
             elif isinstance(self.int_to_node[x], max_pool_block):
                 max_pool_blocks.append(x)
-                self.node_dict[str(x)]=self.int_to_node[x]
+                # self.node_dict[str(x)]=self.int_to_node[x]
         return (conv_blocks, max_pool_blocks)
         
  
@@ -127,10 +131,10 @@ class Network(nn.Module, object):
                 self.nodes.append(self.max_no)
                 if isinstance(curr_node, convolution_block):
                     self.conv_blocks.append(self.max_no)
-                    self.node_dict[str(self.max_no)]=curr_node  
+                    # self.node_dict[str(self.max_no)]=curr_node  
                 elif isinstance(curr_node, max_pool_block):
                     self.max_pool_blocks.append(self.max_no)
-                    self.node_dict[str(self.max_no)]=curr_node
+                    # self.node_dict[str(self.max_no)]=curr_node
                     
         for curr_node in nodes:
             no = self.node_to_int[curr_node]
@@ -141,7 +145,7 @@ class Network(nn.Module, object):
         self.topsorting()
     
     
-    def remove():
+    def remove(self):
         pass
     
     def deepen_morph(self):
@@ -152,25 +156,27 @@ class Network(nn.Module, object):
         identity_conv_block = convolution_block(in_channels, in_h, in_w, out_channels, kernel_size, (kernel_size-1)/2)
 #         weights = identity_conv_block.conv_layer.weight.data
         weights = identity_conv_block.conv_layer.weight
-        
+        mat = np.zeros(weights.shape)
         # creating identity weights
         for channel in range(out_channels):
             for i in range(in_channels):
                 for j in range(kernel_size):
                     for k in range(kernel_size):
-                        weights[channel][i][j][k] = int((channel == i) and (j == k) and j == (kernel_size)/2 )
+                        mat[channel][i][j][k] = int((channel == i) and (j == k) and j == (kernel_size)/2 )
         
+        weights = torch.nn.Parameter(torch.Tensor(mat))
         ## make connections 
-        identity_conv_block.describe_adj_list([deepen_conv_block], deepen_conv_block.out_adj)
-        deepen_conv_block.describe_adj_list(deepen_conv_block.in_adj, [identity_conv_block])
+        identity_conv_block.describe_adj_list([deepen_conv_block], list(deepen_conv_block.out_adj))
+        deepen_conv_block.describe_adj_list(list(deepen_conv_block.in_adj), [identity_conv_block])
 
         #### later look at creating a function for singular change to in_adj or out_adj of nodes
+
         for out_node in identity_conv_block.out_adj:
             out_node_in_adj = [identity_conv_block if (x == deepen_conv_block) else x for x in out_node.in_adj ]
-            out_node.describe_adj_list(out_node_in_adj, out_node.out_adj)
+            out_node.describe_adj_list(out_node_in_adj, list(out_node.out_adj))
         
         self.add_nodes_to_network([deepen_conv_block, identity_conv_block] + identity_conv_block.out_adj)
-        
+        return True  
     
     def widen_morph(self):
         candidate_conv_blocks = []
@@ -209,7 +215,7 @@ class Network(nn.Module, object):
             original_child_weight = child.conv_layer.weight
             child.refresh(in_channels*widening_factor, in_h, in_w, out_channels, kernel_size, padding, stride)
             child.conv_layer.weight[:, :in_channels, :, :] = torch.nn.Parameter(original_child_weight)
-
+        return True
         
     ## Start from here
     def dfs(self, curr_node, visited, weight):
@@ -269,18 +275,20 @@ class Network(nn.Module, object):
         stride = weight[2]
         assert stride == 1
         new_conv = convolution_block(out_ch_1, out_h_1, out_w_1, out_ch_2, kernel_size, padding, stride)
-        new_add = add_block([new_conv, node_b], node_b.out_adj)
+        new_add = add_block([new_conv, node_b], list(node_b.out_adj))
         new_conv.describe_adj_list([node_a], [new_add])
         new_conv.conv_layer.weight = torch.nn.Parameter(torch.zeros(new_conv.conv_layer.weight.data.shape))
-        node_a.describe_adj_list(node_a.in_adj, node_a.out_adj+[new_conv])
+        node_a.describe_adj_list(list(node_a.in_adj), list(node_a.out_adj)+[new_conv])
         for child_node in node_b.out_adj:
-            child_node.describe_adj_list([new_add if x==node_b else x for x in child_node.in_adj], child_node.out_adj)
-        node_b.describe_adj_list(node_b.in_adj, [new_add])
+            child_node.describe_adj_list([new_add if x==node_b else x for x in child_node.in_adj], list(child_node.out_adj))
+        node_b.describe_adj_list(list(node_b.in_adj), [new_add])
         self.add_nodes_to_network([node_a, node_b, new_conv, new_add] + new_add.out_adj)
+        return True
         
         
-    def visualize(self):
-        graph = Digraph(self.image_path, self.image_path+'.gv')
+    def visualize(self, path  = '../assets/images/path'):
+        image_path = path
+        graph = Digraph(image_path, image_path+'.gv')
         for no, curr_node in self.int_to_node.items():
 #             graph.node(str(no), str(type(curr_node)).split('__main__.')[1])
             graph.node(str(no), str(no) + " :: " + repr(curr_node))

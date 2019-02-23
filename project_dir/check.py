@@ -17,7 +17,7 @@ def graph_test():
     f2.describe_adj_list([f1], [])
     
 
-    net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], []]}, {0: n1, 1:n2, 2:flatten, 3:f1, 4:f2}, 'test_net')
+    net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], []]}, {0: n1, 1:n2, 2:flatten, 3:f1, 4:f2})
 #     net.describe() 
     net.visualize()
     for nan in net.nodes:
@@ -52,7 +52,7 @@ def dummy_train():
     f2.describe_adj_list([f1], [])
     
 
-    net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], [5]], 5:[[4], [6]], 6:[[5], [7]], 7:[[6], [8]], 8:[[7], []]}, {0: n1, 1:n2, 2:m1, 3:n3, 4:n4, 5:m2, 6:flatten, 7:f1, 8:f2}, 'test_net')
+    net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], [5]], 5:[[4], [6]], 6:[[5], [7]], 7:[[6], [8]], 8:[[7], []]}, {0: n1, 1:n2, 2:m1, 3:n3, 4:n4, 5:m2, 6:flatten, 7:f1, 8:f2})
     net.createModel()
     Train(net, 1, 0.01, 0.001)
     Test(net)
@@ -76,12 +76,13 @@ def dummy_train1():
     # f2.describe_adj_list([f1], [])
 
 
-    net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], []]}, {0: n1, 1:n2, 2:m1, 3:flatten, 4:f1}, 'test_net')
+    net = Network({0:[[], [1]], 1:[[0], [2]], 2: [[1], [3]], 3:[[2], [4]], 4:[[3], []]}, {0: n1, 1:n2, 2:m1, 3:flatten, 4:f1})
     net.createModel()
     Train(net, 1, 128,  0.01, 0.001)
     Test(net)   
 
 
 if  __name__ == "__main__":
+    graph_test()
     # graph_test()
-    dummy_train1()
+    # dummy_train1()

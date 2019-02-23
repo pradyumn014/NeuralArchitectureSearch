@@ -106,7 +106,8 @@ def Train(net, epochs, batch_size, lr_start, lr_end):
 
 	        # print statistics
             running_loss += loss.item()
-            total_train_loss += loss.data[0]
+            # total_train_loss += loss.data[0]
+            total_train_loss += loss.data.item()
 
             #Print every 10th batch of an epoch
             if (i + 1) % (print_every + 1) == 0:
@@ -134,10 +135,10 @@ def Train(net, epochs, batch_size, lr_start, lr_end):
             val_correct += predicted.eq(labels).sum().item() 
 
             val_loss_size = criterion(val_outputs, labels)
-            total_val_loss += val_loss_size.data[0]
+            total_val_loss += val_loss_size.data.item()
             
         print("Validation loss = {:.2f}".format(total_val_loss / len(val_loader)))
-        print('Accuracy {}'.format(str(val_correct/val_total)))
+        print('Accuracy {}'.format(str(100.*val_correct/val_total)))
     print("Training finished, took {:.2f}s".format(time.time() - training_start_time))
     return (total_val_loss / len(val_loader), val_correct/val_total)
 
